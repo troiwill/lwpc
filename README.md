@@ -8,7 +8,7 @@ Clone the repository and install this package via `build` and `pip`.
 ```
 # Clone the repository.
 cd <REPO DIR>
-git clone https://github.com/troiwill/perspective-camera.git
+git clone https://github.com/troiwill/lwpc.git
 cd lwpc
 
 # Build and install package.
