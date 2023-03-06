@@ -1,0 +1,28 @@
+[build-system]
+requires = [
+    "hatchling"
+]
+build-backend = "hatchling.build"
+
+[project]
+name = "lwpc"
+version = "0.0.1"
+authors = [
+  { name="Troi Williams", email="willkode@outlook.com" },
+]
+description = "A lightweight perspective camera model package."
+readme = "README.md"
+requires-python = ">=3.7"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/troiwill/lwpc"
+"Bug Tracker" = "https://github.com/troiwill/lwpc/issues"
+
+[options]
+install_requires =
+    numpy >= 1.13.0
