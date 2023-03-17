@@ -4,46 +4,57 @@ from typing import Optional
 
 
 class PerspectiveCameraModel:
-    def __init__(self, C: Optional[np.ndarray] = None) -> None:
-        self.__C = None
-        if C is not None:
-            self.set_camera_matrix(C)
+    def __init__(self, intrins_mat: Optional[np.ndarray] = None) -> None:
+        self.__intrins_mat = None
+        if intrins_mat is not None:
+            self.set_intrinsics_matrix(intrins_mat)
 
     @property
-    def C(self) -> np.ndarray:
+    def intrinsics_matrix(self) -> np.ndarray:
         """
-        Returns the camera (intristrics) matrix.
+        Returns the camera intristrics matrix.
         """
         return self.__C.copy()
 
-    def set_camera_matrix(self, C: np.ndarray) -> None:
+    def set_intrinsics_matrix(self, intrins_mat: np.ndarray) -> None:
         """
-        Sets the camera matrix `C`. The camera matrix should have the shape (3,3) or (3,4).
+        Sets the camera intrinsics matrix `intrins_mat`. The camera matrix should have the shape (3,3) or (3,4).
         """
         # Sanity check.
-        if type(C) is not np.ndarray:
+        if type(intrins_mat) is not np.ndarray:
             raise TypeError(
-                f"Camera matrix `C` should be an NumPy array. Got type {type(C)}."
+                f"Camera instrinsics matrix `intrins_mat` should be an NumPy array. Got type {type(intrins_mat)}."
             )
 
-        if C.shape == (3, 3):
-            self.__C = np.hstack((C, np.zeros_like(C, shape=(3, 1))))
+        if intrins_mat.shape == (3, 3):
+            self.__C = np.hstack(
+                (intrins_mat, np.zeros_like(intrins_mat, shape=(3, 1)))
+            )
 
-        elif C.shape == (3, 4):
-            if not np.array_equal(C[:, 3].flatten(), [0.0, 0.0, 0.0]):
+        elif intrins_mat.shape == (3, 4):
+            if not np.array_equal(intrins_mat[:, 3].flatten(), [0.0, 0.0, 0.0]):
                 raise ValueError(f"Expected the last column to have zeros.")
-            self.__C = C.copy()
+            self.__intrins_mat = intrins_mat.copy()
 
         else:
             raise ValueError(
-                f"Expected matrix with shape (3,3) or (3,4). Got shape = {C.shape}."
+                f"Expected matrix with shape (3,3) or (3,4). Got shape = {intrins_mat.shape}."
             )
 
-    def project(self, camera_pose: np.ndarray, points: np.ndarray) -> np.ndarray:
+    def project(
+        self, camera_pose: np.ndarray, points: np.ndarray, return_hip: bool = False
+    ) -> np.ndarray:
         """
-        Projects the `points` from the world frame to the image frame using the camera matrix
+        Projects the `points` from the world frame to the image frame using the camera intrinsics matrix
         and the camera pose `camera_pose`.
         """
+        # Sanity check.
+        assert self.__intrins_mat is not None
+
+        # Perform the projection.
         return utils.project(
-            camera_matrix=self.__C, camera_pose=camera_pose, points=points
+            intrinsics_matrix=self.__intrins_mat,
+            camera_pose=camera_pose,
+            points=points,
+            return_hip=return_hip,
         )
