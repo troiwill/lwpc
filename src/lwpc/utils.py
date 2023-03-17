@@ -29,16 +29,22 @@ def se3inv(pose: np.ndarray) -> np.ndarray:
 
 
 def project(
-    camera_matrix: np.ndarray, camera_pose: np.ndarray, points: np.ndarray
+    intrinsics_matrix: np.ndarray,
+    camera_pose: np.ndarray,
+    points: np.ndarray,
+    return_hip: bool,
 ) -> np.ndarray:
     """
-    Given the camera matrix `camera_matrix`, the camera pose `camera_pose`, and the points 
-    `points`, project the points onto an image plane.
+    Given the camera intrinsics matrix `intrinsics_matrix`, the camera pose `camera_pose`,
+    and the points `points`, project the points onto an image plane. If `return_hip` == True,
+    then this function returns image point in homogeneous coordinates: [ x, y, w ]^T. Note:
+    `points` should be in format (N, 3) for non-homogeneous coordinates or (N, 4) for homogeneous
+    coordinates.
     """
     # Sanity checks.
-    if not isinstance(camera_matrix, np.ndarray):
+    if not isinstance(intrinsics_matrix, np.ndarray):
         raise TypeError(
-            f"Camera matrix should be an ND array. Got type {type(camera_matrix)}."
+            f"Camera intrinsics matrix should be an ND array. Got type {type(intrinsics_matrix)}."
         )
 
     if type(camera_pose) is not np.ndarray:
@@ -64,7 +70,8 @@ def project(
         raise NotImplementedError("Expected the last column to have all ones.")
 
     # Project the points onto the image frame and normalize.
-    projected_points = camera_matrix @ se3inv(camera_pose) @ points.transpose()
-    projected_points = projected_points[:2] / projected_points[2]
+    projected_points = intrinsics_matrix @ se3inv(camera_pose) @ points.transpose()
+    if return_hip == False:
+        projected_points = projected_points[:2] / projected_points[2]
 
     return np.transpose(projected_points)
