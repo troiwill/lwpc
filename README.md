@@ -22,7 +22,7 @@ python3 -m pip install dist/lwpc-*.whl
 
 ### Example
 
-The code below shows how to use this package. The example was defined from the "Robotics, Vision, and Control: Fundamental Algorithms in MATLAB (2nd Edition)" by Peter Corke using Sections 11.1.3 - 11.1.5.
+The code below shows how to use this package. The example was created using the "Robotics, Vision, and Control: Fundamental Algorithms in MATLAB (2nd Edition)" by Peter Corke using Sections 11.1.3 - 11.1.5.
 
 **Note:** If you're using a real or simulated camera, you can get the intrinsics matrix using camera calibration.
 
