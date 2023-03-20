@@ -47,20 +47,17 @@ X = np.array([
 focal_len = 0.015
 pixel_len = 10e-6
 fpr = focal_len / pixel_len
-K = np.array([
+intrinsics_matrix = np.array([
     [ fpr, 0.0, 640.0 ],
     [ 0.0, fpr, 512.0 ],
     [ 0.0, 0.0,   1.0 ]
 ])
-P_0 = np.eye(3, 4)
-
-intrinsics_matrix = K @ P_0
 
 # Define the camera pose.
 camera_pose = np.eye(4)
 
 model = PerspectiveCameraModel(intrinsics_matrix)
-x = model.project(camera_pose, X)
+x = model.project_to_image(camera_pose, X)
 
 print(x)
 ```
